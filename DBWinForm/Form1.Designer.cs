@@ -53,6 +53,7 @@ namespace DBWinForm
             this.AddButton.TabIndex = 1;
             this.AddButton.Text = "Add";
             this.AddButton.UseVisualStyleBackColor = true;
+            this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
             // 
             // SearchButton
             // 
@@ -110,7 +111,9 @@ namespace DBWinForm
             this.TitleTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 25.25F);
             this.TitleTextBox.ForeColor = System.Drawing.SystemColors.ScrollBar;
             this.TitleTextBox.Location = new System.Drawing.Point(12, 58);
+            this.TitleTextBox.MinimumSize = new System.Drawing.Size(3, 3);
             this.TitleTextBox.Name = "TitleTextBox";
+            this.TitleTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.TitleTextBox.Size = new System.Drawing.Size(791, 46);
             this.TitleTextBox.TabIndex = 10;
             this.TitleTextBox.Visible = false;

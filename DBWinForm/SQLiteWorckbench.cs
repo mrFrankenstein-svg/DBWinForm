@@ -93,7 +93,7 @@ namespace DBWinForm
             List<string> searchResult = new List<string>();
             ConnectToDB();
             SQLiteCommand CMD = DB.CreateCommand();
-            CMD.CommandText = "select * substr(Content,1,25) from Content where Title like '%" + searchQuery + "%' or Content like '%" + searchQuery + "%'";
+            CMD.CommandText = "select *,substr(Content,1,20) from Content where Title like '%" + searchQuery + "%' or Content like '%" + searchQuery + "%'";
             SQLiteDataReader dbReturnetData = CMD.ExecuteReader();
             if (dbReturnetData.HasRows)
             {
@@ -101,8 +101,7 @@ namespace DBWinForm
                 {
                     searchResult.Add(dbReturnetData["ID"].ToString() + " id");
                     searchResult.Add((string)dbReturnetData["Title"]);
-                    searchResult.Add((string)dbReturnetData["Content"]);
-
+                    searchResult.Add((string)dbReturnetData["substr(Content,1,20)"] + "...");
                 }
             }
             else
@@ -111,6 +110,13 @@ namespace DBWinForm
             }
             BreakTheConnectionToDB();
             return searchResult;
-        } 
+        }
+        public void AddToDB( string title, string content)
+        {
+            ConnectToDB();
+            SQLiteCommand CMD = DB.CreateCommand();
+            CMD.CommandText = "insert into Content(Title, Content) values (" + title +", " + content +")";
+            BreakTheConnectionToDB();
+        }
     }
 }

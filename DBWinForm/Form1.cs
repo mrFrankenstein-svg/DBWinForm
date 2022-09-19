@@ -23,16 +23,44 @@ namespace DBWinForm
         }
         private void SearchButton_Click(object sender, EventArgs e)
         {
-            if (SQWorck.SearchInDB(SearchBox))
-            {
-                SearchBox.DroppedDown = true;
-            }
-            else
-            {
-                SearchBox.DroppedDown = false;
-            }
+            SearchButtonAction();
         }
         private void SearchBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropMenuAction();
+        }
+
+        private void CloseButton_Click(object sender, EventArgs e)
+        {
+            CloseButton.Visible = false;
+            AddButton.Visible = true;
+            SearchButton.Visible = true;
+            SearchBox.Visible = true;
+            SearchBox.Text = "";
+            TitleTextBox.Visible = false;
+            TitleTextBox.Text = "";
+            ContentTextBox.Visible = false;
+            ContentTextBox.Text = "";
+        }
+
+        private void AddButton_Click(object sender, EventArgs e)
+        {
+            AddButtonAction();
+        }
+
+        private void SearchButtonAction()
+        {
+            SearchBox.Items.Clear();
+            List<string> resultOfSearcing = SQWorck.SearchInDBOnServer(SearchBox.Text);
+            
+            for (int i = 0; i < resultOfSearcing.Count; i++)
+            {
+                SearchBox.Items.Insert(i,resultOfSearcing[i]);
+            }
+            if (SearchBox.Items.Count>1)
+            SearchBox.DroppedDown = true;
+        }
+        private void DropMenuAction()
         {
             CloseButton.Visible = true;
             AddButton.Visible = false;
@@ -64,20 +92,22 @@ namespace DBWinForm
                 string[] stringWithIindex = functions.Split((string)SearchBox.Items[numberOfRowWithID], ' ');
                 SQWorck.LoadDateFromDBByID(int.Parse(stringWithIindex[0]), ContentTextBox, TitleTextBox);
             }
-            
-            //SQWorck.SearcInDB(SearchBox, ContentTextBox, TitleTextBox);
         }
-
-        private void CloseButton_Click(object sender, EventArgs e)
+        private void AddButtonAction()
         {
-            CloseButton.Visible = false;
-            AddButton.Visible = true;
-            SearchButton.Visible = true;
-            SearchBox.Visible = true;
-            SearchBox.Text = "";
-            TitleTextBox.Visible = false;
-            ContentTextBox.Visible = false;
-            ContentTextBox.Text = "";
+            if (CloseButton.Visible == true || AddButton.Visible == true)
+            {
+
+            }
+            else
+            {
+                CloseButton.Visible = true;
+                SearchButton.Visible = false;
+                SearchBox.Visible = false;
+                TitleTextBox.Visible = true;
+                ContentTextBox.Visible = true;
+                //SQWorck.AddToDB();
+            }
         }
     }
 }
