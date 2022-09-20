@@ -51,6 +51,7 @@ namespace DBWinForm
             {
                 searcResult.Text = "Нет такго";
             }
+            dbReturnetData.Close();
             BreakTheConnectionToDB();
             return state;
         }
@@ -64,29 +65,10 @@ namespace DBWinForm
             dbReturnetData.Read();
             titleOutput.Text = (string)dbReturnetData["Title"];
             contentOutput.Text = (string)dbReturnetData["Content"];
+            dbReturnetData.Close();
             BreakTheConnectionToDB();
         }
-        public void LoadDateFromDB(string text)
-        {
-            ConnectToDB();
-
-            SQLiteCommand CMD = DB.CreateCommand();
-            CMD.CommandText = "select * from Users";
-            SQLiteDataReader dbReturnetData = CMD.ExecuteReader();
-            if (dbReturnetData.HasRows)
-            {
-                while (dbReturnetData.Read())
-                {
-                    text += "Логин: " + dbReturnetData["Title"] + " Пароль: " + dbReturnetData["Password"] + " \r\n";
-                }
-            }
-            else
-            {
-                text = "null";
-            }
-
-            BreakTheConnectionToDB();
-        }
+    
         
         public List<string> SearchInDBOnServer(string searchQuery)
         {
@@ -108,6 +90,7 @@ namespace DBWinForm
             {
                 searchResult.Add("Нет такго");
             }
+            dbReturnetData.Close();
             BreakTheConnectionToDB();
             return searchResult;
         }
@@ -115,7 +98,16 @@ namespace DBWinForm
         {
             ConnectToDB();
             SQLiteCommand CMD = DB.CreateCommand();
-            CMD.CommandText = "insert into Content(Title, Content) values (" + title +", " + content +")";
+            CMD.CommandText = "insert into Content(Title, Content) values ('" + title + "', '" + content + "')";
+            CMD.ExecuteNonQuery();
+            BreakTheConnectionToDB();
+        }
+        public void DeliteFromDB(int ID)
+        {
+            ConnectToDB();
+            SQLiteCommand CMD = DB.CreateCommand(); 
+            CMD.CommandText = "delete from Content where ID like '" +ID + "'";
+            CMD.ExecuteNonQuery();
             BreakTheConnectionToDB();
         }
     }

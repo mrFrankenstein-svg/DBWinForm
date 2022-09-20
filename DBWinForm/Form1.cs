@@ -32,6 +32,21 @@ namespace DBWinForm
 
         private void CloseButton_Click(object sender, EventArgs e)
         {
+            CloseButtonAction();
+        }
+
+        private void DeleteButton_Click(object sender, EventArgs e)
+        {
+            DeleteButtonAction();
+        }
+
+        private void AddButton_Click(object sender, EventArgs e)
+        {
+            AddButtonAction();
+        }
+
+        private void CloseButtonAction()
+        {
             CloseButton.Visible = false;
             AddButton.Visible = true;
             SearchButton.Visible = true;
@@ -41,13 +56,9 @@ namespace DBWinForm
             TitleTextBox.Text = "";
             ContentTextBox.Visible = false;
             ContentTextBox.Text = "";
+            DeleteButton.Visible = false;
+            IDtext.Text = "";
         }
-
-        private void AddButton_Click(object sender, EventArgs e)
-        {
-            AddButtonAction();
-        }
-
         private void SearchButtonAction()
         {
             SearchBox.Items.Clear();
@@ -68,16 +79,12 @@ namespace DBWinForm
             SearchBox.Visible = false;
             TitleTextBox.Visible = true;
             ContentTextBox.Visible = true;
+            DeleteButton.Visible = true;
 
-            if (SearchBox.SelectedIndex == 0 || SearchBox.SelectedIndex % 3 == 0)
+            int numberOfRowWithID = SearchBox.SelectedIndex;
+            if (numberOfRowWithID != 0 || numberOfRowWithID % 3 != 0)
             {
-                string[] stringWithIindex = functions.Split((string)SearchBox.Items[SearchBox.SelectedIndex], ' ');
-                SQWorck.LoadDateFromDBByID(int.Parse(stringWithIindex[0]), ContentTextBox, TitleTextBox);
-            }
-            else
-            {
-                int numberOfRowWithID = 0;
-                for (int i = SearchBox.SelectedIndex; i != 0;)
+                for (int i = SearchBox.SelectedIndex; i != -1;)
                 {
                     if (i % 3 == 0)
                     {
@@ -89,15 +96,22 @@ namespace DBWinForm
                         i--;
                     }
                 }
-                string[] stringWithIindex = functions.Split((string)SearchBox.Items[numberOfRowWithID], ' ');
-                SQWorck.LoadDateFromDBByID(int.Parse(stringWithIindex[0]), ContentTextBox, TitleTextBox);
             }
+            IDtext.Text = (string)SearchBox.Items[numberOfRowWithID];
+            /*
+            string[] stringWithIindex = functions.Split((string)SearchBox.Items[numberOfRowWithID], ' ');
+            SQWorck.LoadDateFromDBByID(int.Parse(stringWithIindex[0]), ContentTextBox, TitleTextBox);
+            */
+
+            SQWorck.LoadDateFromDBByID(int.Parse(functions.Split((string)SearchBox.Items[numberOfRowWithID], ' ').First()), ContentTextBox, TitleTextBox);
         }
         private void AddButtonAction()
         {
-            if (CloseButton.Visible == true || AddButton.Visible == true)
+            if (CloseButton.Visible == true && AddButton.Visible == true)
             {
-
+                SQWorck.AddToDB(TitleTextBox.Text, ContentTextBox.Text );
+                CloseButtonAction();
+                SearchBox.Text = "Запись добавлена.";
             }
             else
             {
@@ -106,8 +120,16 @@ namespace DBWinForm
                 SearchBox.Visible = false;
                 TitleTextBox.Visible = true;
                 ContentTextBox.Visible = true;
-                //SQWorck.AddToDB();
+                TitleTextBox.Text = "";
+                ContentTextBox.Text = "";
             }
         }
+        private void DeleteButtonAction()
+        {
+            SQWorck.DeliteFromDB(int.Parse(functions.Split(IDtext.Text, ' ').First()));
+            CloseButtonAction();
+            SearchBox.Text = "Запись удалена.";
+        }
+
     }
 }
